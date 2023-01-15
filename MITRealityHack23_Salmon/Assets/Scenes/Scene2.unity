@@ -5545,12 +5545,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _manager: {fileID: 0}
-  _ignoreHoverMode: 0
-  _isIgnoringAllHoverState: 0
-  _ignorePrimaryHover: 0
+  _ignoreHoverMode: 3
+  _isIgnoringAllHoverState: 1
+  _ignorePrimaryHover: 1
   _ignoreContact: 0
   _ignoreGraspingMode: 0
-  _ignoreGrasping: 0
+  _ignoreGrasping: 1
   _contactForceMode: 0
   _allowMultiGrasp: 0
   _moveObjectWhenGrasped: 1
@@ -6179,6 +6179,7 @@ MonoBehaviour:
   audio12: {fileID: 8300000, guid: ece636cb4b881744c8019c33e909a3fa, type: 3}
   audio22: {fileID: 8300000, guid: 97a60e72a524a5a47b5c73e520b96965, type: 3}
   myTimer: 0
+  StartFadeTime: 0
 --- !u!4 &1155970214
 Transform:
   m_ObjectHideFlags: 0

@@ -5,9 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManagerScript : MonoBehaviour
 {
-    private bool audio11HasPlayed = false;
-    private bool audio12HasPlayed = false;
-    private bool audio22HasPlayed = false;
+   
 
 
     #region GameObjects
@@ -29,6 +27,10 @@ public class GameManagerScript : MonoBehaviour
     public AudioClip audio11;
     public AudioClip audio12;
     public AudioClip audio22;
+
+    private bool audio11HasPlayed = false;
+    private bool audio12HasPlayed = false;
+    private bool audio22HasPlayed = false;
     #endregion
 
     #region GameManager
@@ -63,6 +65,9 @@ public class GameManagerScript : MonoBehaviour
 
     //Timer
     public float myTimer = 0.0f;
+    public float StartFadeTime;
+    public float ZoomBookTime;
+    public float ZoomOutTime;
 
     //Scene2
     public void ZoomInName()
@@ -76,24 +81,28 @@ public class GameManagerScript : MonoBehaviour
     public void GrabStart()
     {
         Debug.Log("GrabtoEnd");
+        StartFadeTime = myTimer;
         InvokeRepeating("GrabtoEnd", 0, 0.1f);
     }
     public void GrabtoEnd()
     {
         //Debug.Log("GrabtoEnd");
-        GameObject.Find("FadeBlack").GetComponent<Renderer>().material.SetColor("_Color", Color.Lerp(new Color(0, 0, 0, 0), new Color(0, 0, 0, 1), Time.time * 0.2f));
+        GameObject.Find("FadeBlack").GetComponent<Renderer>().material.SetColor("_Color", Color.Lerp(new Color(0, 0, 0, 0), new Color(0, 0, 0, 1), (Time.time-StartFadeTime) * 0.2f));
 
     }
 
     public void ZoomToBook()
     {
+        
         //change the camera clip to 0.01
         myCamera.GetComponent<LookingGlass.Holoplay>().CameraData.NearClipFactor = 0.01f;
+        myCamera.GetComponent<LookingGlass.Holoplay>().CameraData.NearClipFactor = Mathf.Lerp(0.75f, 0.01f, (Time.time-ZoomBookTime)*0.5f);
     }
 
     public void ZoomOut()
     {
         myCamera.GetComponent<LookingGlass.Holoplay>().CameraData.NearClipFactor = 0.75f;
+        myCamera.GetComponent<LookingGlass.Holoplay>().CameraData.NearClipFactor = Mathf.Lerp(0.01f, 0.75f, (Time.time - ZoomOutTime) * 0.5f);
     }
     // Start is called before the first frame update
     void Start()
@@ -108,7 +117,8 @@ public class GameManagerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-       
+        //myGameState = 7;
+
         Debug.Log(myGoose.GetComponent<Leap.Unity.Interaction.InteractionBehaviour>().ignoreGrasping);
 
         myTimer += Time.deltaTime;
@@ -182,6 +192,7 @@ public class GameManagerScript : MonoBehaviour
         if (myGameState == 3 && !aud.isPlaying)
         {
             myGameState = 4;
+            ZoomBookTime = myTimer;
         }
 
         //State = 4: users zoom in to bookshelf, state = 5
@@ -213,6 +224,7 @@ public class GameManagerScript : MonoBehaviour
         {
             myGameState = 6;
             waveOut.SetActive(true);
+            ZoomOutTime = myTimer;
         }
   
         //State=6: zoom out to building, state =7
@@ -225,6 +237,7 @@ public class GameManagerScript : MonoBehaviour
         if (myGameState == 6 && myCamera.GetComponent<LookingGlass.Holoplay>().CameraData.NearClipFactor == 0.75f)//&&camera check 0.75
         {
             myGameState = 7;
+            
             waveOut.SetActive(false);
         }
         //In state 7. now you already zoom out to entire building, so we grab goose.
